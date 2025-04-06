@@ -1,149 +1,231 @@
+
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make Reservation</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
 
-<style>
-/* General Page Styling */
-body {
-    font-family: 'Poppins', sans-serif;
-    background: linear-gradient(to right, #65a5ca, #badd1e);
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-}
+        form {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
 
-/* Center the form */
-form {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    width: 100%;
-    text-align: center;
-}
+        form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
 
-/* Style Form Labels */
-label {
-    display: block;
-    font-weight: 600;
-    margin-top: 10px;
-    text-align: left;
-}
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 28px;
+            text-align: center;
+        }
 
-/* Style Form Inputs & Select */
-input, select {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-    transition: 0.3s ease-in-out;
-}
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-/* Highlight input on focus */
-input:focus, select:focus {
-    border-color: #ff758c;
-    outline: none;
-    box-shadow: 0px 0px 5px rgba(255, 117, 140, 0.6);
-}
+        label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
 
-/* Submit Button */
-button {
-    margin-top: 15px;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #09fa05;
-    color: rgb(15, 1, 1);
-    font-size: 18px;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #333;
+            box-sizing: border-box;
+        }
 
-button:hover {
-    background: #7743ab;
-    transform: scale(1.05);
-}
+        input:focus, select:focus {
+            border-color: #28a745;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.2);
+        }
 
-/* Error Message Styling */
-p {
-    color: red;
-    font-size: 14px;
-    font-weight: bold;
-    margin-top: 10px;
-}
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+        }
 
-/* Responsive Design */
-@media (max-width: 480px) {
-    form {
-        max-width: 90%;
-        padding: 20px;
-    }
-}
-</style>
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(40, 167, 69, 0.6);
+        }
 
-<form action="{% url 'make_reservation' %}" method="POST">
-    {% csrf_token %}
-    
-    <label for="customer_name">Name:</label>
-    <input type="text" id="customer_name" name="customer_name" required>
+        button:active {
+            transform: translateY(1px);
+        }
 
-    <label for="contact_number">Contact Number:</label>
-    <input type="text" id="contact_number" name="contact_number" required>
+        #customSeatsDiv {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+        }
 
-    <label for="table">Select Table:</label>
-    <select id="table" name="table" required >
-        {% for table in tables %}
-        <option value="{{ table.id }}">Table {{ table.id }} (Seats: {{ table.seats }})</option>
-        {% endfor %}
-        <option value="custom">Other (Enter required number of seats)</option>
-    </select>
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            text-align: center;
+        }
 
-    <div id="customSeatsDiv" style="display: none;margin-top: 10px;" >
-        <label for="custom_seats">Enter number of seats:</label>
-        <input type="number" name="custom_seats" id="custom_seats" min="1" required>
+        .input-icon {
+            position: relative;
+        }
+
+        .input-icon i {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+
+        @media (max-width: 576px) {
+            form {
+                padding: 25px;
+            }
+            
+            h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'make_reservation' %}" method="POST">
+        {% csrf_token %}
+        <h2><i class="fas fa-calendar-alt" style="margin-right: 10px;"></i>Make Your Reservation</h2>
+
+        <div class="form-group">
+            <label for="customer_name">Name:</label>
+            <div class="input-icon">
+                <input type="text" id="customer_name" name="customer_name" required>
+                <i class="fas fa-user"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="contact_number">Contact Number:</label>
+            <div class="input-icon">
+                <input type="text" id="contact_number" name="contact_number" required>
+                <i class="fas fa-phone"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="table">Select Table:</label>
+            <div class="input-icon">
+                <select id="table" name="table" required>
+                    {% for table in tables %}
+                    <option value="{{ table.id }}">Table {{ table.id }} (Seats: {{ table.seats }})</option>
+                    {% endfor %}
+                    <option value="custom">Other (Enter required number of seats)</option>
+                </select>
+                <i class="fas fa-chair"></i>
+            </div>
+        </div>
+
+        <div id="customSeatsDiv" style="display: none;">
+            <label for="custom_seats">Enter number of seats:</label>
+            <div class="input-icon">
+                <input type="number" name="custom_seats" id="custom_seats" min="1">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <div class="input-icon">
+                <input type="date" id="date" name="date" required>
+                <i class="fas fa-calendar"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="arrival_time">Arrival Time:</label>
+            <div class="input-icon">
+                <input type="time" id="arrival_time" name="arrival_time" required>
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="departure_time">Departure Time:</label>
+            <div class="input-icon">
+                <input type="time" id="departure_time" name="departure_time" required>
+                <i class="fas fa-hourglass-end"></i>
+            </div>
+        </div>
+
+        <button type="submit">
+            <i class="fas fa-check-circle" style="margin-right: 8px;"></i>
+            Confirm Reservation
+        </button>
+    </form>
+
+    {% if error %}
+    <div class="error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ error }}
     </div>
-
+    {% endif %}
 
     <script>
-
-        function customSeatsToggle(){
-            const tableSelect=document.getElementById('table');
-            const customSeatsDiv=document.getElementById('customSeatsDiv');
-            const customSeatsInput=document.getElementById('custom_seats');
-
-
-            if(tableSelect.value==='custom'){
-                customSeatsDiv.style.display='block';
-                customSeatsInput.required=true;
-            }
-            else{
-                customSeatsDiv.style.display='none';
-                customSeatsInput.required=false;
-            }
-
-
-        }
-        window.onload=customSeatsToggle;
-        document.getElementById('table').addEventListener('change',customSeatsToggle);
+        // ...existing code for customSeatsToggle function...
     </script>
-
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" required>
-
-    <label for="arrival_time">Arrival Time:</label>
-    <input type="time" id="arrival_time" name="arrival_time" required>
-
-    <label for="departure_time">Departure Time:</label>
-    <input type="time" id="departure_time" name="departure_time" required>
-
-    <button type="submit">Reserve Table</button>
-</form>
-
-{% if error %}
-<p>{{ error }}</p>
-{% endif %}
+</body>
+</html>
