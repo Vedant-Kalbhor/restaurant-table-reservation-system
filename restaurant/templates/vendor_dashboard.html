@@ -1262,10 +1262,25 @@
     }
     
     function filterBookings() {
-      const dateFrom = document.getElementById('date-from').value;
+      // const dateFrom = document.getElementById('date-from').value;
+      const dateFromInput = document.getElementById('date-from').value; // e.g., "2025-04-22"
+      let dateFrom_ = new Date(dateFromInput);
+
+      // Subtract one day
+      dateFrom_.setDate(dateFrom_.getDate() - 1);
+
+      // Format back to YYYY-MM-DD
+      const yyyy = dateFrom_.getFullYear();
+      const mm = String(dateFrom_.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+      const dd = String(dateFrom_.getDate()).padStart(2, '0');
+      const newDate = `${yyyy}-${mm}-${dd}`;
+
+      const dateFrom = newDate
+
       const dateTo = document.getElementById('date-to').value;
       const status = document.getElementById('status-filter').value;
       const searchTerm = document.getElementById('search-input').value.toLowerCase();
+      
       
       const tableRows = document.querySelectorAll('#bookings-table tbody tr');
       
